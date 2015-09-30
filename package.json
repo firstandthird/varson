@@ -1,0 +1,27 @@
+{
+  "name": "varson",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "json",
+    "template",
+    "object"
+  ],
+  "author": "Greg Allen <code@firstandthird.com> (http://firstandthird.com/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firstandthird/varson.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^3.3.0",
+    "lodash": "^3.10.1",
+    "lodash.template": "^3.6.2",
+    "mocha": "^2.3.3",
+    "traverse": "^0.6.6"
+  }
+}
