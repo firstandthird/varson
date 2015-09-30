@@ -163,4 +163,38 @@ describe('varson', function() {
       arr: ['bob', 'smith']
     });
   });
+
+  it('should handle recursion', function() {
+    var result = jsontpl({
+      a: 'a',
+      b: '{{c}}',
+      c: '{{a}}'
+    });
+
+    expect(result).to.deep.equal({
+      a: 'a',
+      b: 'a',
+      c: 'a'
+    });
+  });
+
+  it('should handle nested recursion', function() {
+    var result = jsontpl({
+      a: 'a',
+      b: '{{c}}',
+      c: '{{a}}',
+      nest: {
+        d: '{{b}}'
+      }
+    });
+
+    expect(result).to.deep.equal({
+      a: 'a',
+      b: 'a',
+      c: 'a',
+      nest: {
+        d: 'a'
+      }
+    });
+  });
 });

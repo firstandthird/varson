@@ -10,13 +10,24 @@ module.exports = function(obj, context) {
   var objWithContext = _.cloneDeep(obj);
   _.merge(objWithContext, context);
 
-  traverse(obj).forEach(function(x) {
-    if (typeof x == 'string' && x.match(reg)) {
-      var compiled = _.template(x);
-      var out = compiled(objWithContext);
-      out = parseStr(out);
-      this.update(out);
-    }
-  });
+  var check = function(val) {
+    return (typeof val == 'string' && val.match(reg));
+  };
+
+  var runAgain = false;
+  do {
+    runAgain = false;
+    traverse(obj).forEach(function(x) {
+      if (check(x)) {
+        var compiled = _.template(x);
+        var out = compiled(objWithContext);
+        out = parseStr(out);
+        if (check(out)) {
+          runAgain = true;
+        }
+        this.update(out);
+      }
+    });
+  } while(runAgain);
   return obj;
 };
