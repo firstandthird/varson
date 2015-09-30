@@ -197,4 +197,13 @@ describe('varson', function() {
       }
     });
   });
+
+  it('should handle circular', function() {
+    expect(function() {
+      jsontpl({
+        a: '{{a}}'
+      });
+    }).to.throw();
+
+  });
 });

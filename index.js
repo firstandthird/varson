@@ -14,6 +14,8 @@ module.exports = function(obj, context) {
     return (typeof val == 'string' && val.match(reg));
   };
 
+  var max = 5;
+  var count = 0;
   var runAgain = false;
   do {
     runAgain = false;
@@ -28,6 +30,10 @@ module.exports = function(obj, context) {
         this.update(out);
       }
     });
+    count++;
+    if (count > max) {
+      throw new Error('circular references');
+    }
   } while(runAgain);
   return obj;
 };
