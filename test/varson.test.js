@@ -1,14 +1,14 @@
 /* global describe, it */
 
 var expect = require('chai').expect;
-var jsontpl = require('../');
+var varson = require('../');
 
 describe('varson', function() {
 
 
   it('should populate from another var', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'Bob',
       last: 'Smith',
       full: '{{first}} {{last}}'
@@ -23,7 +23,7 @@ describe('varson', function() {
 
   it('should keep the if boolean true', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: true,
@@ -40,7 +40,7 @@ describe('varson', function() {
 
   it('should keep the if boolean false', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: false,
@@ -57,7 +57,7 @@ describe('varson', function() {
 
   it('should keep the if number', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: 1,
@@ -74,7 +74,7 @@ describe('varson', function() {
 
   it('should work with nested', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'Bob',
       last: 'Smith',
       info: {
@@ -101,7 +101,7 @@ describe('varson', function() {
 
   it('should allow math', function() {
 
-    var result = jsontpl({
+    var result = varson({
       math: '{{ 10*50 }}'
     });
 
@@ -112,7 +112,7 @@ describe('varson', function() {
 
   it('should allow js', function() {
 
-    var result = jsontpl({
+    var result = varson({
       js: '{{ [1,2].join(",") }}'
     });
 
@@ -123,7 +123,7 @@ describe('varson', function() {
 
   it('should allow passing in custom functions', function() {
 
-    var result = jsontpl({
+    var result = varson({
       first: 'bob',
       last: 'smith',
       full: '{{getFullName(first, last)}}'
@@ -141,7 +141,7 @@ describe('varson', function() {
   });
 
   it('should work with arrays', function() {
-    var result = jsontpl({
+    var result = varson({
       arr: [1,2,3]
     });
 
@@ -151,7 +151,7 @@ describe('varson', function() {
   });
 
   it('should populate variables from arrays', function() {
-    var result = jsontpl({
+    var result = varson({
       first: 'bob',
       last: 'smith',
       arr: ['{{first}}','{{last}}']
@@ -165,7 +165,7 @@ describe('varson', function() {
   });
 
   it('should handle recursion', function() {
-    var result = jsontpl({
+    var result = varson({
       a: 'a',
       b: '{{c}}',
       c: '{{a}}'
@@ -179,7 +179,7 @@ describe('varson', function() {
   });
 
   it('should handle nested recursion', function() {
-    var result = jsontpl({
+    var result = varson({
       a: 'a',
       b: '{{c}}',
       c: '{{a}}',
@@ -199,7 +199,7 @@ describe('varson', function() {
   });
 
   it.skip('should handle objects', function() {
-    var result = jsontpl({
+    var result = varson({
       obja: {
         a: 'a'
       },
@@ -218,7 +218,7 @@ describe('varson', function() {
 
   it('should handle circular', function() {
     expect(function() {
-      jsontpl({
+      varson({
         a: '{{a}}'
       });
     }).to.throw();
