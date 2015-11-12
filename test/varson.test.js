@@ -198,6 +198,24 @@ describe('varson', function() {
     });
   });
 
+  it.skip('should handle objects', function() {
+    var result = jsontpl({
+      obja: {
+        a: 'a'
+      },
+      objb: '{{obja}}'
+    });
+
+    expect(result).to.deep.equal({
+      obja: {
+        a: 'a'
+      },
+      objb: {
+        a: 'a'
+      }
+    });
+  });
+
   it('should handle circular', function() {
     expect(function() {
       jsontpl({
