@@ -198,6 +198,28 @@ describe('varson', function() {
     });
   });
 
+  it('context this is the object', function() {
+    var result = varson({
+      keys: 'obj',
+      obj: {
+        value: 'abc'
+      },
+      result: '{{lookup(keys, "value")}}'
+    }, {
+      lookup: function(key, value) {
+        return this[key][value]
+      }
+    });
+
+    expect(result).to.deep.equal({
+      keys: 'obj',
+      obj: {
+        value: 'abc'
+      },
+      result: 'abc'
+    });
+  });
+
   it.skip('should handle objects', function() {
     var result = varson({
       obja: {
