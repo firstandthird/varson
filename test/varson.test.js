@@ -121,6 +121,19 @@ describe('varson', function() {
     });
   });
 
+  it('should allow js - part 2', function() {
+
+    var result = varson({
+      scale: '{{ env == "prod" ? 4 : 1}}'
+    }, {
+      env: 'dev'
+    });
+
+    expect(result).to.deep.equal({
+      scale: 1
+    });
+  });
+
   it('should allow passing in custom functions', function() {
 
     var result = varson({
