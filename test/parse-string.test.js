@@ -7,6 +7,10 @@ describe('parseStr', () => {
     const o = parseStr([1, 2, 3]);
     expect(o).to.deep.equal([1, 2, 3]);
   });
+  it('should parse empty strings as empty strings', () => {
+    const o = parseStr('');
+    expect(o).to.deep.equal('');
+  });
   it('should parse ints', () => {
     const o = parseStr('1');
     expect(o).to.equal(1);
