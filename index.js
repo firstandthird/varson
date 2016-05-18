@@ -23,7 +23,9 @@ module.exports = (obj, context) => {
       if (check(out)) {
         runAgain = true;
       }
-      this.update(out);
+      if (this && this.update) {
+        this.update(out);
+      }
     }
   };
   do {

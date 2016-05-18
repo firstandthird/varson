@@ -121,8 +121,8 @@ describe('varson', () => {
       last: 'smith',
       full: '{{getFullName(first, last)}}'
     }, {
-      getFullName: function(first, last) {
-        return first + ' ' + last;
+      getFullName: (first, last) => {
+        return `${first} ${last}`;
       }
     });
     expect(result).to.deep.equal({
@@ -134,10 +134,10 @@ describe('varson', () => {
 
   it('should work with arrays', () => {
     const result = varson({
-      arr: [1,2,3]
+      arr: [1, 2, 3]
     });
     expect(result).to.deep.equal({
-      arr: [1,2,3]
+      arr: [1, 2, 3]
     });
   });
 
@@ -145,7 +145,7 @@ describe('varson', () => {
     const result = varson({
       first: 'bob',
       last: 'smith',
-      arr: ['{{first}}','{{last}}']
+      arr: ['{{first}}', '{{last}}']
     });
     expect(result).to.deep.equal({
       first: 'bob',
@@ -194,8 +194,8 @@ describe('varson', () => {
       },
       result: '{{lookup(keys, "value")}}'
     }, {
-      lookup: function(key, value) {
-        return this[key][value]
+      lookup: (key, value) => {
+        return this[key][value];
       }
     });
     expect(result).to.deep.equal({
