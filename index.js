@@ -1,39 +1,38 @@
-var _ = require('lodash');
-var traverse = require('traverse');
-var parseStr = require('./lib/parse-string');
+'use strict';
+const _ = require('lodash');
+const traverse = require('traverse');
+const parseStr = require('./lib/parse-string');
 
-module.exports = function(obj, context) {
-
-  var reg = /{{([\s\S]+?)}}/g;
+module.exports = (obj, context) => {
+  const reg = /{{([\s\S]+?)}}/g;
   _.templateSettings.interpolate = reg;
-
-  var objWithContext = _.cloneDeep(obj);
+  const objWithContext = _.cloneDeep(obj);
   _.merge(objWithContext, context);
 
-  var check = function(val) {
-    return (typeof val == 'string' && val.match(reg));
+  const check = (val) => {
+    return (typeof val === 'string' && val.match(reg));
   };
-
-  var max = 5;
-  var count = 0;
-  var runAgain = false;
+  const max = 5;
+  let count = 0;
+  let runAgain = false;
+  const forEach = (x) => {
+    if (check(x)) {
+      const compiled = _.template(x);
+      let out = compiled(objWithContext);
+      out = parseStr(out);
+      if (check(out)) {
+        runAgain = true;
+      }
+      this.update(out);
+    }
+  };
   do {
     runAgain = false;
-    traverse(obj).forEach(function(x) {
-      if (check(x)) {
-        var compiled = _.template(x);
-        var out = compiled(objWithContext);
-        out = parseStr(out);
-        if (check(out)) {
-          runAgain = true;
-        }
-        this.update(out);
-      }
-    });
+    traverse(obj).forEach(forEach);
     count++;
     if (count > max) {
       throw new Error('circular references');
     }
-  } while(runAgain);
+  } while (runAgain);
   return obj;
 };
