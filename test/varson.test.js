@@ -1,19 +1,14 @@
 /* global describe, it */
+const expect = require('chai').expect;
+const varson = require('../');
 
-var expect = require('chai').expect;
-var varson = require('../');
-
-describe('varson', function() {
-
-
-  it('should populate from another var', function() {
-
-    var result = varson({
+describe('varson', () => {
+  it('should populate from another var', () => {
+    const result = varson({
       first: 'Bob',
       last: 'Smith',
       full: '{{first}} {{last}}'
     });
-
     expect(result).to.deep.equal({
       first: 'Bob',
       last: 'Smith',
@@ -21,15 +16,13 @@ describe('varson', function() {
     });
   });
 
-  it('should keep the if boolean true', function() {
-
-    var result = varson({
+  it('should keep the if boolean true', () => {
+    const result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: true,
       isManager: '{{manager}}'
     });
-
     expect(result).to.deep.equal({
       first: 'Bob',
       last: 'Smith',
@@ -38,15 +31,13 @@ describe('varson', function() {
     });
   });
 
-  it('should keep the if boolean false', function() {
-
-    var result = varson({
+  it('should keep the if boolean false', () => {
+    const result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: false,
       isManager: '{{manager}}'
     });
-
     expect(result).to.deep.equal({
       first: 'Bob',
       last: 'Smith',
@@ -55,15 +46,13 @@ describe('varson', function() {
     });
   });
 
-  it('should keep the if number', function() {
-
-    var result = varson({
+  it('should keep the if number', () => {
+    const result = varson({
       first: 'Bob',
       last: 'Smith',
       manager: 1,
       isManager: '{{manager}}'
     });
-
     expect(result).to.deep.equal({
       first: 'Bob',
       last: 'Smith',
@@ -72,9 +61,8 @@ describe('varson', function() {
     });
   });
 
-  it('should work with nested', function() {
-
-    var result = varson({
+  it('should work with nested', () => {
+    const result = varson({
       first: 'Bob',
       last: 'Smith',
       info: {
@@ -85,7 +73,6 @@ describe('varson', function() {
         }
       }
     });
-
     expect(result).to.deep.equal({
       first: 'Bob',
       last: 'Smith',
@@ -99,44 +86,37 @@ describe('varson', function() {
     });
   });
 
-  it('should allow math', function() {
-
-    var result = varson({
+  it('should allow math', () => {
+    const result = varson({
       math: '{{ 10*50 }}'
     });
-
     expect(result).to.deep.equal({
       math: 500
     });
   });
 
-  it('should allow js', function() {
-
-    var result = varson({
+  it('should allow js', () => {
+    const result = varson({
       js: '{{ [1,2].join(",") }}'
     });
-
     expect(result).to.deep.equal({
       js: '1,2'
     });
   });
 
-  it('should allow js - part 2', function() {
-
-    var result = varson({
+  it('should allow js - part 2', () => {
+    const result = varson({
       scale: '{{ env == "prod" ? 4 : 1}}'
     }, {
       env: 'dev'
     });
-
     expect(result).to.deep.equal({
       scale: 1
     });
   });
 
-  it('should allow passing in custom functions', function() {
-
-    var result = varson({
+  it('should allow passing in custom functions', () => {
+    const result = varson({
       first: 'bob',
       last: 'smith',
       full: '{{getFullName(first, last)}}'
@@ -145,7 +125,6 @@ describe('varson', function() {
         return first + ' ' + last;
       }
     });
-
     expect(result).to.deep.equal({
       first: 'bob',
       last: 'smith',
@@ -153,23 +132,21 @@ describe('varson', function() {
     });
   });
 
-  it('should work with arrays', function() {
-    var result = varson({
+  it('should work with arrays', () => {
+    const result = varson({
       arr: [1,2,3]
     });
-
     expect(result).to.deep.equal({
       arr: [1,2,3]
     });
   });
 
-  it('should populate variables from arrays', function() {
-    var result = varson({
+  it('should populate variables from arrays', () => {
+    const result = varson({
       first: 'bob',
       last: 'smith',
       arr: ['{{first}}','{{last}}']
     });
-
     expect(result).to.deep.equal({
       first: 'bob',
       last: 'smith',
@@ -177,13 +154,12 @@ describe('varson', function() {
     });
   });
 
-  it('should handle recursion', function() {
-    var result = varson({
+  it('should handle recursion', () => {
+    const result = varson({
       a: 'a',
       b: '{{c}}',
       c: '{{a}}'
     });
-
     expect(result).to.deep.equal({
       a: 'a',
       b: 'a',
@@ -191,8 +167,8 @@ describe('varson', function() {
     });
   });
 
-  it('should handle nested recursion', function() {
-    var result = varson({
+  it('should handle nested recursion', () => {
+    const result = varson({
       a: 'a',
       b: '{{c}}',
       c: '{{a}}',
@@ -200,7 +176,6 @@ describe('varson', function() {
         d: '{{b}}'
       }
     });
-
     expect(result).to.deep.equal({
       a: 'a',
       b: 'a',
@@ -211,8 +186,8 @@ describe('varson', function() {
     });
   });
 
-  it('context this is the object', function() {
-    var result = varson({
+  it('context this is the object', () => {
+    const result = varson({
       keys: 'obj',
       obj: {
         value: 'abc'
@@ -223,7 +198,6 @@ describe('varson', function() {
         return this[key][value]
       }
     });
-
     expect(result).to.deep.equal({
       keys: 'obj',
       obj: {
@@ -233,14 +207,13 @@ describe('varson', function() {
     });
   });
 
-  it.skip('should handle objects', function() {
-    var result = varson({
+  it.skip('should handle objects', () => {
+    const result = varson({
       obja: {
         a: 'a'
       },
       objb: '{{obja}}'
     });
-
     expect(result).to.deep.equal({
       obja: {
         a: 'a'
@@ -251,12 +224,11 @@ describe('varson', function() {
     });
   });
 
-  it('should handle circular', function() {
-    expect(function() {
+  it('should handle circular', () => {
+    expect(() => {
       varson({
         a: '{{a}}'
       });
     }).to.throw();
-
   });
 });
