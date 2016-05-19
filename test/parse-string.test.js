@@ -1,6 +1,5 @@
 /* global describe, it */
 const expect = require('chai').expect;
-
 const parseStr = require('../lib/parse-string');
 describe('parseStr', () => {
   it('should skip non strings', () => {
