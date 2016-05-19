@@ -1,4 +1,12 @@
 
+0.1.0 / 2016-05-19
+==================
+
+  * handles empty strings as empty string
+  * es6 and lintified
+  * renamed test functions to varson
+  * added a test for objects that doesn't pass yet, will need to add support for this
+
 0.0.2 / 2015-09-30
 ==================
 
