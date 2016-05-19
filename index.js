@@ -15,9 +15,7 @@ module.exports = (obj, context) => {
   const max = 5;
   let count = 0;
   let runAgain = false;
-  // this should be declared with 'function' keyword so that
-  // traverse.js can override 'this':
-  const forEach = function(x) {
+  const forEach = (x) => {
     if (check(x)) {
       const compiled = _.template(x);
       let out = compiled(objWithContext);
@@ -25,7 +23,9 @@ module.exports = (obj, context) => {
       if (check(out)) {
         runAgain = true;
       }
-      this.update(out);
+      if (this && this.update) {
+        this.update(out);
+      }
     }
   };
   do {
