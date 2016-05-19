@@ -15,7 +15,6 @@ describe('varson', () => {
       full: 'Bob Smith'
     });
   });
-
   it('should keep the if boolean true', () => {
     const result = varson({
       first: 'Bob',
@@ -194,7 +193,9 @@ describe('varson', () => {
       },
       result: '{{lookup(keys, "value")}}'
     }, {
-      lookup: (key, value) => {
+      // keep this as 'function' keyword notation
+      // so 'this' will be available:
+      lookup: function(key, value) {
         return this[key][value];
       }
     });
