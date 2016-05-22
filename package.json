@@ -19,12 +19,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chai": "^3.3.0",
     "lodash": "^3.10.1",
-    "mocha": "^2.3.3",
     "traverse": "^0.6.6"
   },
   "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
     "eslint": "^2.9.0",
     "eslint-config-airbnb": "^8.0.0",
     "eslint-config-firstandthird": "^2.0.0",
