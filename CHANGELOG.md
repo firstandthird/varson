@@ -1,4 +1,10 @@
 
+0.1.3 / 2016-06-24
+==================
+
+  * added readme with travisci badge, covers node versions 4,5,6
+  * travisci
+
 0.1.2 / 2016-05-22
 ==================
 
