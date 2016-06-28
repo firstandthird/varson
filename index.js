@@ -19,9 +19,16 @@ module.exports = (obj, context) => {
   // traverse.js can override 'this':
   const forEach = function(x) {
     if (check(x)) {
-      const compiled = _.template(x);
-      let out = compiled(objWithContext);
-      out = parseStr(out);
+      let out;
+      const name = x.replace('}}', '').replace('{{', '');
+      // lodash template will turn objects into 'Object: object'
+      // so just set it explicitly if so:
+      if (typeof objWithContext[name] === 'object') {
+        out = objWithContext[name];
+      } else {
+        const compiled = _.template(x);
+        out = parseStr(compiled(objWithContext));
+      }
       if (check(out)) {
         runAgain = true;
       }
