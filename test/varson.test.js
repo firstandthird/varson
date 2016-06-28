@@ -208,7 +208,7 @@ describe('varson', () => {
     });
   });
 
-  it.skip('should handle objects', () => {
+  it('should handle objects', () => {
     const result = varson({
       obja: {
         a: 'a'
