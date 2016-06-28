@@ -1,13 +1,14 @@
 'use strict';
-const _ = require('lodash');
+const template = require('lodash.template');
+const merge = require('lodash.merge');
+const cloneDeep = require('lodash.clonedeep');
 const traverse = require('traverse');
 const parseStr = require('./lib/parse-string');
 
 module.exports = (obj, context) => {
   const reg = /{{([\s\S]+?)}}/g;
-  _.templateSettings.interpolate = reg;
-  const objWithContext = _.cloneDeep(obj);
-  _.merge(objWithContext, context);
+  const objWithContext = cloneDeep(obj);
+  merge(objWithContext, context);
 
   const check = (val) => {
     return (typeof val === 'string' && val.match(reg));
@@ -22,11 +23,11 @@ module.exports = (obj, context) => {
       let out;
       const name = x.replace('}}', '').replace('{{', '');
       // lodash template will turn objects into 'Object: object'
-      // so just set it explicitly if so:
+      // so just set it explicitly and move on if it's an object:
       if (typeof objWithContext[name] === 'object') {
         out = objWithContext[name];
       } else {
-        const compiled = _.template(x);
+        const compiled = template(x, { interpolate: reg });
         out = parseStr(compiled(objWithContext));
       }
       if (check(out)) {
