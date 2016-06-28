@@ -1,13 +1,15 @@
 'use strict';
-const _ = require('lodash');
+const template = require('lodash.template');
+const merge = require('lodash.merge');
+const cloneDeep = require('lodash.clonedeep');
 const traverse = require('traverse');
 const parseStr = require('./lib/parse-string');
 
 module.exports = (obj, context) => {
   const reg = /{{([\s\S]+?)}}/g;
-  _.templateSettings.interpolate = reg;
-  const objWithContext = _.cloneDeep(obj);
-  _.merge(objWithContext, context);
+  // templateSettings.interpolate = reg;
+  const objWithContext = cloneDeep(obj);
+  merge(objWithContext, context);
 
   const check = (val) => {
     return (typeof val === 'string' && val.match(reg));
@@ -19,7 +21,7 @@ module.exports = (obj, context) => {
   // traverse.js can override 'this':
   const forEach = function(x) {
     if (check(x)) {
-      const compiled = _.template(x);
+      const compiled = template(x, { interpolate: reg });
       let out = compiled(objWithContext);
       out = parseStr(out);
       if (check(out)) {
