@@ -7,7 +7,6 @@ const parseStr = require('./lib/parse-string');
 
 module.exports = (obj, context) => {
   const reg = /{{([\s\S]+?)}}/g;
-  // templateSettings.interpolate = reg;
   const objWithContext = cloneDeep(obj);
   merge(objWithContext, context);
 
@@ -21,9 +20,16 @@ module.exports = (obj, context) => {
   // traverse.js can override 'this':
   const forEach = function(x) {
     if (check(x)) {
-      const compiled = template(x, { interpolate: reg });
-      let out = compiled(objWithContext);
-      out = parseStr(out);
+      let out;
+      const name = x.replace('}}', '').replace('{{', '');
+      // lodash template will turn objects into 'Object: object'
+      // so just set it explicitly and move on if it's an object:
+      if (typeof objWithContext[name] === 'object') {
+        out = objWithContext[name];
+      } else {
+        const compiled = template(x, { interpolate: reg });
+        out = parseStr(compiled(objWithContext));
+      }
       if (check(out)) {
         runAgain = true;
       }
