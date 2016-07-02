@@ -1,4 +1,10 @@
 
+0.3.0 / 2016-07-02
+==================
+
+  * support for nested objects
+  * only imports needed lodash methods
+
 0.2.0 / 2016-06-28
 ==================
 
