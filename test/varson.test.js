@@ -225,6 +225,48 @@ describe('varson', () => {
     });
   });
 
+  it('should handle complex objects', () => {
+    const result = varson({
+      name: 'bob',
+      obja: {
+        name: '{{name}}'
+      },
+      objb: '{{obja}}'
+    });
+    expect(result).to.deep.equal({
+      name: 'bob',
+      obja: {
+        name: 'bob'
+      },
+      objb: {
+        name: 'bob'
+      }
+    });
+  });
+
+  it('should handle nested complex objects', () => {
+    const result = varson({
+      people: {
+        obja: {
+          name: '{{people.name}}'
+        },
+        objb: '{{people.obja}}',
+        name: 'bob'
+      }
+    });
+    expect(result).to.deep.equal({
+      people: {
+        obja: {
+          name: 'bob'
+        },
+        objb: {
+          name: 'bob'
+        },
+        name: 'bob'
+      }
+    });
+  });
+
   it('should handle circular', () => {
     expect(() => {
       varson({
