@@ -274,4 +274,30 @@ describe('varson', () => {
       });
     }).to.throw();
   });
+
+  it('should allow for dynamic keys', () => {
+    const result = varson({
+      '{{b}}': '{{ [1,2].join(",") }}',
+      b: 'js'
+    });
+    expect(result).to.deep.equal({
+      js: '1,2',
+      b: 'js'
+    });
+  });
+
+  it('should allow for js in keys', () => {
+    const result = varson({
+      '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
+      '{{ c ? "cIsTrue" : "cIsFalse" }}': '123',
+      b: true,
+      c: false
+    });
+    expect(result).to.deep.equal({
+      bIsTrue: '123',
+      cIsFalse: '123',
+      b: true,
+      c: false
+    });
+  });
 });
