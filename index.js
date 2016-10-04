@@ -23,7 +23,7 @@ module.exports = (obj, context) => {
 
   // reduceCurrentObject runs on each node of the expression tree,
   // evaluates the key and value expressions for that node,
-  // and returns an object with the evaluated key-values:
+  // and returns a memo object with the evaluated key-values:
   const reduceCurrentObject = function(memo, originalValueString) {
     let evaluatedKey;
     let evaluatedValue;
