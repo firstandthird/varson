@@ -5,6 +5,8 @@ const cloneDeep = require('lodash.clonedeep');
 const traverse = require('traverse');
 const parseStr = require('./lib/parse-string');
 const get = require('lodash.get');
+const set = require('lodash.set');
+const unset = require('lodash.unset');
 
 module.exports = (obj, context) => {
   const reg = /{{([\s\S]+?)}}/g;
@@ -52,8 +54,19 @@ module.exports = (obj, context) => {
     } else {
       outKey = key;
     }
-    if (outKey !== undefined && this.level === 1) {
-      memo[outKey] = x;
+    if (outKey !== undefined) {
+      if (this.path.length === 1) {
+        memo[outKey] = x;
+        return memo;
+      }
+      // be sure to unset any leftover unevaluated key:
+      const oldPath = this.path.slice(0, this.path.length - 1);
+      oldPath.push(key);
+      unset(memo, oldPath.join('.'));
+      // set the evaluated key:
+      const path = this.path.slice(0, this.path.length - 1);
+      path.push(outKey);
+      set(memo, path.join('.'), x);
     }
     return memo;
   };

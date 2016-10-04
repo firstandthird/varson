@@ -283,6 +283,24 @@ describe('varson', () => {
       b: 'js'
     });
   });
+  it('should allow for dynamic keys in nested statements', () => {
+    const result = varson({
+      '{{b}}': '{{ [1,2].join(",") }}',
+      b: 'js',
+      c: {
+        '{{d}}': 'this is nested'
+      },
+      d: 'hi'
+    });
+    expect(result).to.deep.equal({
+      js: '1,2',
+      b: 'js',
+      c: {
+        hi: 'this is nested'
+      },
+      d: 'hi'
+    });
+  });
   it('should allow for js in keys', () => {
     const result = varson({
       '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
