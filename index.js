@@ -1,12 +1,13 @@
 'use strict';
-const template = require('lodash.template');
-const merge = require('lodash.merge');
-const cloneDeep = require('lodash.clonedeep');
+const _ = require('lodash');
 const traverse = require('traverse');
 const parseStr = require('./lib/parse-string');
-const get = require('lodash.get');
-const set = require('lodash.set');
-const unset = require('lodash.unset');
+const template = _.template;
+const merge = _.merge;
+const cloneDeep = _.cloneDeep;
+const get = _.get;
+const set = _.set;
+const unset = _.unset;
 
 module.exports = (obj, context) => {
   const reg = /{{([\s\S]+?)}}/g;
@@ -19,70 +20,67 @@ module.exports = (obj, context) => {
   const max = 5;
   let count = 0;
   let runAgain = false;
-  // this should be declared with 'function' keyword so that
-  // traverse.js can override 'this':
-  const forEach = function(x) {
-    if (check(x)) {
-      let out;
-      const name = x.replace('}}', '').replace('{{', '');
-      // lodash template will turn objects into 'Object: object'
-      // so just set it explicitly and move on if it's an object:
-      const val = get(objWithContext, name);
-      if (typeof val === 'object') {
-        out = val;
-      } else {
-        const compiled = template(x, { interpolate: reg });
-        out = parseStr(compiled(objWithContext));
-      }
-      if (check(out)) {
-        runAgain = true;
-      }
-      this.update(out);
-    }
-  };
-  const reduce = function(memo, x) {
-    let outKey;
-    //todo: you probably need to keep the forEach and do the key as a separate .reduce step
-    // evaluate key:
-    const key = this.key;
-    if (check(key)) {
-      const compiled = template(key, { interpolate: reg });
-      outKey = parseStr(compiled(objWithContext));
-      if (check(outKey)) {
+
+  // reduceCurrentObject runs on each node of the expression tree,
+  // evaluates the key and value expressions for that node,
+  // and returns an object with the evaluated key-values:
+  const reduceCurrentObject = function(memo, originalValueString) {
+    let evaluatedKey;
+    let evaluatedValue;
+    const originalKey = this.key;
+
+    // evaluate originalKey:
+    if (check(originalKey)) {
+      const compiled = template(originalKey, { interpolate: reg });
+      evaluatedKey = parseStr(compiled(objWithContext));
+      if (check(evaluatedKey)) {
         runAgain = true;
       }
     } else {
-      outKey = key;
+      evaluatedKey = originalKey;
     }
-    if (outKey !== undefined) {
+
+    // evaluate the originalValueString
+    evaluatedValue = originalValueString;
+    if (check(originalValueString)) {
+      const name = originalValueString.replace('}}', '').replace('{{', '');
+      const originalValue = get(objWithContext, name);
+      // if it's an object, we must update the current node to make sure we traverse the sub-object too:
+      if (typeof originalValue === 'object') {
+        evaluatedValue = originalValue;
+        this.update(evaluatedValue);
+      } else {
+        const compiled = template(originalValueString, { interpolate: reg });
+        evaluatedValue = parseStr(compiled(objWithContext));
+      }
+      if (check(evaluatedValue)) {
+        runAgain = true;
+      }
+    }
+    // if we have an evaluated key, set it to the evaluated value:
+    if (evaluatedKey !== undefined) {
+      // if it's a top-level key, just set it and we're done:
       if (this.path.length === 1) {
-        memo[outKey] = x;
+        memo[evaluatedKey] = evaluatedValue;
         return memo;
       }
-      // be sure to unset any leftover unevaluated key:
+      // if it's a key inside a nested sub-object, we need to unset the previous unevaluated key:
       const oldPath = this.path.slice(0, this.path.length - 1);
-      oldPath.push(key);
+      oldPath.push(originalKey);
       unset(memo, oldPath.join('.'));
-      // set the evaluated key:
+      // and now we can set the evaluated key:
       const path = this.path.slice(0, this.path.length - 1);
-      path.push(outKey);
-      set(memo, path.join('.'), x);
+      path.push(evaluatedKey);
+      set(memo, path.join('.'), evaluatedValue);
     }
     return memo;
   };
-  // evaluate values:
+
+  // the main loop repeatedly reduces the current object to a new object,
+  // until all the bracketed expressions are evaluated and replaced:
   do {
     runAgain = false;
-    traverse(obj).forEach(forEach);
-    count++;
-    if (count > max) {
-      throw new Error('circular references');
-    }
-  } while (runAgain);
-  // evaluate keys:
-  do {
-    runAgain = false;
-    obj = traverse(obj).reduce(reduce, {});
+    obj = traverse(obj).reduce(reduceCurrentObject, {});
     count++;
     if (count > max) {
       throw new Error('circular references');
