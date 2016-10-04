@@ -38,9 +38,38 @@ module.exports = (obj, context) => {
       this.update(out);
     }
   };
+  const reduce = function(memo, x) {
+    let outKey;
+    //todo: you probably need to keep the forEach and do the key as a separate .reduce step
+    // evaluate key:
+    const key = this.key;
+    if (check(key)) {
+      const compiled = template(key, { interpolate: reg });
+      outKey = parseStr(compiled(objWithContext));
+      if (check(outKey)) {
+        runAgain = true;
+      }
+    } else {
+      outKey = key;
+    }
+    if (outKey !== undefined && this.level === 1) {
+      memo[outKey] = x;
+    }
+    return memo;
+  };
+  // evaluate values:
   do {
     runAgain = false;
     traverse(obj).forEach(forEach);
+    count++;
+    if (count > max) {
+      throw new Error('circular references');
+    }
+  } while (runAgain);
+  // evaluate keys:
+  do {
+    runAgain = false;
+    obj = traverse(obj).reduce(reduce, {});
     count++;
     if (count > max) {
       throw new Error('circular references');

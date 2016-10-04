@@ -165,7 +165,6 @@ describe('varson', () => {
       c: 'a'
     });
   });
-
   it('should handle nested recursion', () => {
     const result = varson({
       a: 'a',
@@ -184,7 +183,6 @@ describe('varson', () => {
       }
     });
   });
-
   it('context this is the object', () => {
     const result = varson({
       keys: 'obj',
@@ -285,7 +283,6 @@ describe('varson', () => {
       b: 'js'
     });
   });
-
   it('should allow for js in keys', () => {
     const result = varson({
       '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
