@@ -9,8 +9,8 @@ const get = _.get;
 const set = _.set;
 const unset = _.unset;
 
-module.exports = (obj, context) => {
-  const reg = /{{([\s\S]+?)}}/g;
+const varson = (obj, context) => {
+  const reg = new RegExp(`${varson.settings.start}([\\s\\S]+?)${varson.settings.end}`, 'g');
   const objWithContext = cloneDeep(obj);
   merge(objWithContext, context);
 
@@ -43,7 +43,7 @@ module.exports = (obj, context) => {
     // evaluate the originalValueString
     evaluatedValue = originalValueString;
     if (check(originalValueString)) {
-      const name = originalValueString.replace('}}', '').replace('{{', '');
+      const name = originalValueString.replace(varson.settings.end, '').replace(varson.settings.start, '');
       const originalValue = get(objWithContext, name);
       // if it's an object, we must update the current node to make sure we traverse the sub-object too:
       if (typeof originalValue === 'object') {
@@ -88,3 +88,9 @@ module.exports = (obj, context) => {
   } while (runAgain);
   return obj;
 };
+
+varson.settings = {
+  start: '{{',
+  end: '}}'
+};
+module.exports = varson;

@@ -315,4 +315,21 @@ describe('varson', () => {
       c: false
     });
   });
+
+  it('should allow to change {{ }} to { }', () => {
+    const origSettings = varson.settings;
+    varson.settings.start = '{';
+    varson.settings.end = '}';
+    const result = varson({
+      first: 'Bob',
+      last: 'Smith',
+      full: '{first} {last}'
+    });
+    expect(result).to.deep.equal({
+      first: 'Bob',
+      last: 'Smith',
+      full: 'Bob Smith'
+    });
+    varson.settings = origSettings;
+  });
 });
