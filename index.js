@@ -14,9 +14,7 @@ const varson = (obj, context) => {
   const objWithContext = cloneDeep(obj);
   merge(objWithContext, context);
 
-  const check = (val) => {
-    return (typeof val === 'string' && val.match(reg));
-  };
+  const check = (val) => (typeof val === 'string' && val.match(reg));
   const max = 5;
   let count = 0;
   let runAgain = false;
