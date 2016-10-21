@@ -316,6 +316,19 @@ describe('varson', () => {
     });
   });
 
+  it.only('should allow path in key (currently fails)', () => {
+    const result = varson({
+      './test': {
+        debug: true
+      }
+    });
+    expect(result).to.deep.equal({
+      './test': {
+        debug: true
+      }
+    });
+  });
+
   it('should allow to change {{ }} to { }', () => {
     const origSettings = varson.settings;
     varson.settings.start = '{';
