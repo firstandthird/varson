@@ -65,11 +65,11 @@ const varson = (obj, context) => {
       // if it's a key inside a nested sub-object, we need to unset the previous unevaluated key:
       const oldPath = this.path.slice(0, this.path.length - 1);
       oldPath.push(originalKey);
-      unset(memo, oldPath.join('.'));
+      unset(memo, oldPath);
       // and now we can set the evaluated key:
       const path = this.path.slice(0, this.path.length - 1);
       path.push(evaluatedKey);
-      set(memo, path.join('.'), evaluatedValue);
+      set(memo, path, evaluatedValue);
     }
     return memo;
   };

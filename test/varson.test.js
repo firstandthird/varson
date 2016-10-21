@@ -316,15 +316,19 @@ describe('varson', () => {
     });
   });
 
-  it.only('should allow path in key (currently fails)', () => {
+  it('should allow . in key or value (failed before)', () => {
     const result = varson({
+      blah: 'yep',
       './test': {
-        debug: true
+        './debug': './true',
+        '{{blah}}': 123
       }
     });
     expect(result).to.deep.equal({
+      blah: 'yep',
       './test': {
-        debug: true
+        './debug': './true',
+        yep: 123
       }
     });
   });
