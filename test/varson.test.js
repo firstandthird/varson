@@ -303,7 +303,7 @@ describe('varson', () => {
     });
   });
 
-  it('should allow completex dynamic key', () => {
+  it('should allow complex dynamic key', () => {
     const result = varson({
       firstName: 'bob',
       lastName: 'smith',
@@ -327,6 +327,36 @@ describe('varson', () => {
       }
     });
   });
+
+  it('should allow complex dynamic key pt 2', () => {
+    const result = varson({
+      firstName: 'bob',
+      lastName: 'smith',
+      age: 35,
+      card: {
+        '{{firstName}}': {
+          age: '{{age}}'
+        },
+        '{{lastName}}': {
+          age: '{{age}}'
+        }
+      }
+    });
+    expect(result).to.deep.equal({
+      firstName: 'bob',
+      lastName: 'smith',
+      age: 35,
+      card: {
+        bob: {
+          age: 35
+        },
+        smith: {
+          age: 35
+        }
+      }
+    });
+  });
+
 
   it('should allow for js in keys', () => {
     const result = varson({
