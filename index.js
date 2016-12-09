@@ -11,66 +11,72 @@ const unset = _.unset;
 
 const varson = (obj, context) => {
   const reg = new RegExp(`${varson.settings.start}([\\s\\S]+?)${varson.settings.end}`, 'g');
-  const objWithContext = cloneDeep(obj);
-  merge(objWithContext, context);
 
-  const check = (val) => (typeof val === 'string' && val.match(reg));
+  const isVariable = (val) => (typeof val === 'string' && val.match(reg));
+
+  const originalUnmodifiedObject = cloneDeep(obj);
+  merge(originalUnmodifiedObject, context);
   const max = 5;
   let count = 0;
   let runAgain = false;
 
+  // helper function that tries to replace '{{}}'s:
+  const evaluateItem = (text) => {
+    const evaluate = template(text, { interpolate: reg });
+    return parseStr(evaluate(originalUnmodifiedObject));
+  };
+
   // reduceCurrentObject runs on each node of the expression tree,
   // evaluates the key and value expressions for that node,
-  // and returns a memo object with the evaluated key-values:
+  // and updates the memo object with the evaluated key-values:
   const reduceCurrentObject = function(memo, originalValueString) {
     let evaluatedKey;
     let evaluatedValue;
-    const originalKey = this.key;
 
-    // evaluate originalKey:
-    if (check(originalKey)) {
-      const compiled = template(originalKey, { interpolate: reg });
-      evaluatedKey = parseStr(compiled(objWithContext));
-      if (check(evaluatedKey)) {
+    // evaluate what the key is supposed to be:
+    if (isVariable(this.key)) {
+      evaluatedKey = evaluateItem(this.key);
+      if (isVariable(evaluatedKey)) {
         runAgain = true;
       }
     } else {
-      evaluatedKey = originalKey;
+      evaluatedKey = this.key;
     }
+    this.evaluatedKey = evaluatedKey;
 
-    // evaluate the originalValueString
+    // evaluate what the value at that key is supposed to be:
     evaluatedValue = originalValueString;
-    if (check(originalValueString)) {
-      const name = originalValueString.replace(varson.settings.end, '').replace(varson.settings.start, '');
-      const originalValue = get(objWithContext, name);
+    if (isVariable(originalValueString)) {
+      const originalValue = get(memo, originalValueString.replace(varson.settings.end, '').replace(varson.settings.start, ''));
       // if it's an object, we must update the current node to make sure we traverse the sub-object too:
       if (typeof originalValue === 'object') {
         evaluatedValue = originalValue;
         this.update(evaluatedValue);
       } else {
-        const compiled = template(originalValueString, { interpolate: reg });
-        evaluatedValue = parseStr(compiled(objWithContext));
+        evaluatedValue = evaluateItem(originalValueString);
       }
-      if (check(evaluatedValue)) {
+      if (isVariable(evaluatedValue)) {
         runAgain = true;
       }
     }
-    // if we have an evaluated key, set it to the evaluated value:
-    if (evaluatedKey !== undefined) {
-      // if it's a top-level key, just set it and we're done:
-      if (this.path.length === 1) {
-        memo[evaluatedKey] = evaluatedValue;
-        return memo;
+
+    // now to update the object with the new evaluated key/values data...
+
+    // first verify the parent path segments are up-to-date with the current state of the memo object:
+    let curParent = this;
+    const pathToValue = this.path.slice();
+    for (let i = pathToValue.length - 2; i > - 1; i--) {
+      curParent = curParent.parent;
+      if (curParent.evaluatedKey) {
+        pathToValue[i] = curParent.evaluatedKey;
       }
-      // if it's a key inside a nested sub-object, we need to unset the previous unevaluated key:
-      const oldPath = this.path.slice(0, this.path.length - 1);
-      oldPath.push(originalKey);
-      unset(memo, oldPath);
-      // and now we can set the evaluated key:
-      const path = this.path.slice(0, this.path.length - 1);
-      path.push(evaluatedKey);
-      set(memo, path, evaluatedValue);
     }
+    // using the old path, unset the previous value:
+    unset(memo, pathToValue);
+    // get the new path to the newly-evaluated key:
+    pathToValue[pathToValue.length - 1] = evaluatedKey;
+    // update it:
+    set(memo, pathToValue, evaluatedValue);
     return memo;
   };
 
