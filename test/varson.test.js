@@ -283,6 +283,7 @@ describe('varson', () => {
       b: 'js'
     });
   });
+
   it('should allow for dynamic keys in nested statements', () => {
     const result = varson({
       '{{b}}': '{{ [1,2].join(",") }}',
@@ -301,6 +302,62 @@ describe('varson', () => {
       d: 'hi'
     });
   });
+
+  it('should allow complex dynamic key', () => {
+    const result = varson({
+      firstName: 'bob',
+      lastName: 'smith',
+      name: '{{firstName}} {{lastName}}',
+      age: 35,
+      card: {
+        '{{name}}': {
+          age: '{{age}}'
+        }
+      }
+    });
+    expect(result).to.deep.equal({
+      firstName: 'bob',
+      lastName: 'smith',
+      name: 'bob smith',
+      age: 35,
+      card: {
+        'bob smith': {
+          age: 35
+        }
+      }
+    });
+  });
+
+  it('should allow complex dynamic key pt 2', () => {
+    const result = varson({
+      firstName: 'bob',
+      lastName: 'smith',
+      age: 35,
+      card: {
+        '{{firstName}}': {
+          age: '{{age}}'
+        },
+        '{{lastName}}': {
+          age: '{{age}}'
+        }
+      }
+    });
+    expect(result).to.deep.equal({
+      firstName: 'bob',
+      lastName: 'smith',
+      age: 35,
+      card: {
+        bob: {
+          age: 35
+        },
+        smith: {
+          age: 35
+        }
+      }
+    });
+  });
+
+
   it('should allow for js in keys', () => {
     const result = varson({
       '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
