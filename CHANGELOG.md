@@ -1,4 +1,10 @@
 
+0.5.2 / 2016-12-09
+==================
+
+  * added another broken test case
+  * added test case that fails
+
 0.5.1 / 2016-10-21
 ==================
 
