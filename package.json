@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "tape test/*.test.js | tap-spec"
+    "test": "tap --cov test/*.test.js"
   },
   "keywords": [
     "json",
