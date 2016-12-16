@@ -23,10 +23,15 @@ const varson = (obj, context) => {
   // helper function that tries to replace '{{}}'s:
   const evaluateItem = (text) => {
     const evaluate = template(text, { interpolate: reg });
-    const value = _.get(originalUnmodifiedObject, _.trim(text, '{}'));
-    if (typeof value === 'object') {
-      return value;
+    // if the value is a sub-object we don't want to parse it:
+    const match = reg.exec(text);
+    if (match) {
+      const value = _.get(originalUnmodifiedObject, match[1]);
+      if (typeof value === 'object') {
+        return value;
+      }
     }
+    // everything else needs to be parsed:
     return parseStr(evaluate(originalUnmodifiedObject));
   };
 
