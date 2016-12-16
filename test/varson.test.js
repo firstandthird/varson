@@ -1,4 +1,5 @@
 /* global describe, it */
+const tape = require('tape');
 const expect = require('chai').expect;
 const varson = require('../');
 
