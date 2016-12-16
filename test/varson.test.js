@@ -206,6 +206,27 @@ describe('varson', () => {
     });
   });
 
+  it('context obj', () => {
+    const result = varson({
+      people: '{{data}}',
+      firstName: '{{data.firstName}}',
+      lastName: '{{data.lastName}}'
+    }, {
+      data: {
+        firstName: 'Bob',
+        lastName: 'Smith'
+      }
+    });
+    expect(result).to.deep.equal({
+      people: {
+        firstName: 'Bob',
+        lastName: 'Smith'
+      },
+      firstName: 'Bob',
+      lastName: 'Smith'
+    });
+  });
+
   it('should handle objects', () => {
     const result = varson({
       obja: {
