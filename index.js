@@ -23,6 +23,10 @@ const varson = (obj, context) => {
   // helper function that tries to replace '{{}}'s:
   const evaluateItem = (text) => {
     const evaluate = template(text, { interpolate: reg });
+    const value = _.get(originalUnmodifiedObject, _.trim(text, '{}'));
+    if (typeof value === 'object') {
+      return value;
+    }
     return parseStr(evaluate(originalUnmodifiedObject));
   };
 
@@ -32,7 +36,6 @@ const varson = (obj, context) => {
   const reduceCurrentObject = function(memo, originalValueString) {
     let evaluatedKey;
     let evaluatedValue;
-
     // evaluate what the key is supposed to be:
     if (isVariable(this.key)) {
       evaluatedKey = evaluateItem(this.key);
