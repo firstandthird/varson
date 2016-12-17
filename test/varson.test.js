@@ -1,430 +1,456 @@
-/* global describe, it */
-const expect = require('chai').expect;
+/* global describe, test */
+const test = require('tape');
 const varson = require('../');
 
-describe('varson', () => {
-  it('should populate from another var', () => {
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      full: '{{first}} {{last}}'
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      full: 'Bob Smith'
-    });
+test('should populate from another var', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    full: '{{first}} {{last}}'
   });
-  it('should keep the if boolean true', () => {
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      manager: true,
-      isManager: '{{manager}}'
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      manager: true,
-      isManager: true
-    });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    full: 'Bob Smith'
   });
+});
 
-  it('should keep the if boolean false', () => {
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      manager: false,
-      isManager: '{{manager}}'
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      manager: false,
-      isManager: false
-    });
+test('should keep the if boolean true', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: true,
+    isManager: '{{manager}}'
   });
-
-  it('should keep the if number', () => {
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      manager: 1,
-      isManager: '{{manager}}'
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      manager: 1,
-      isManager: 1
-    });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: true,
+    isManager: true
   });
+});
 
-  it('should work with nested', () => {
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      info: {
-        full: '{{first}} {{last}}',
-        title: 'manager',
-        deep: {
-          title: '{{info.title}}'
-        }
+test('should keep the if boolean false', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: false,
+    isManager: '{{manager}}'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: false,
+    isManager: false
+  });
+});
+
+test('should keep the if number', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: 1,
+    isManager: '{{manager}}'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: 1,
+    isManager: 1
+  });
+});
+
+test('should work with nested', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    info: {
+      full: '{{first}} {{last}}',
+      title: 'manager',
+      deep: {
+        title: '{{info.title}}'
       }
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      info: {
-        full: 'Bob Smith',
-        title: 'manager',
-        deep: {
-          title: 'manager'
-        }
+    }
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    info: {
+      full: 'Bob Smith',
+      title: 'manager',
+      deep: {
+        title: 'manager'
       }
-    });
+    }
   });
+});
 
-  it('should allow math', () => {
-    const result = varson({
-      math: '{{ 10*50 }}'
-    });
-    expect(result).to.deep.equal({
-      math: 500
-    });
+test('should allow math', (t) => {
+  t.plan(1);
+  const result = varson({
+    math: '{{ 10*50 }}'
   });
+  t.deepEqual(result, {
+    math: 500
+  });
+});
 
-  it('should allow js', () => {
-    const result = varson({
-      js: '{{ [1,2].join(",") }}'
-    });
-    expect(result).to.deep.equal({
-      js: '1,2'
-    });
+test('should allow js', (t) => {
+  t.plan(1);
+  const result = varson({
+    js: '{{ [1,2].join(",") }}'
   });
+  t.deepEqual(result, {
+    js: '1,2'
+  });
+});
 
-  it('should allow js - part 2', () => {
-    const result = varson({
-      scale: '{{ env == "prod" ? 4 : 1}}'
-    }, {
-      env: 'dev'
-    });
-    expect(result).to.deep.equal({
-      scale: 1
-    });
+test('should allow js - part 2', (t) => {
+  t.plan(1);
+  const result = varson({
+    scale: '{{ env == "prod" ? 4 : 1}}'
+  }, {
+    env: 'dev'
   });
+  t.deepEqual(result, {
+    scale: 1
+  });
+});
 
-  it('should allow passing in custom functions', () => {
-    const result = varson({
-      first: 'bob',
-      last: 'smith',
-      full: '{{getFullName(first, last)}}'
-    }, {
-      getFullName: (first, last) => {
-        return `${first} ${last}`;
-      }
-    });
-    expect(result).to.deep.equal({
-      first: 'bob',
-      last: 'smith',
-      full: 'bob smith'
-    });
+test('should allow passing in custom functions', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'bob',
+    last: 'smith',
+    full: '{{getFullName(first, last)}}'
+  }, {
+    getFullName: (first, last) => {
+      return `${first} ${last}`;
+    }
   });
+  t.deepEqual(result, {
+    first: 'bob',
+    last: 'smith',
+    full: 'bob smith'
+  });
+});
 
-  it('should work with arrays', () => {
-    const result = varson({
-      arr: [1, 2, 3]
-    });
-    expect(result).to.deep.equal({
-      arr: [1, 2, 3]
-    });
+test('should work with arrays', (t) => {
+  t.plan(1);
+  const result = varson({
+    arr: [1, 2, 3]
   });
+  t.deepEqual(result, {
+    arr: [1, 2, 3]
+  });
+});
 
-  it('should populate variables from arrays', () => {
-    const result = varson({
-      first: 'bob',
-      last: 'smith',
-      arr: ['{{first}}', '{{last}}']
-    });
-    expect(result).to.deep.equal({
-      first: 'bob',
-      last: 'smith',
-      arr: ['bob', 'smith']
-    });
+test('should populate variables from arrays', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'bob',
+    last: 'smith',
+    arr: ['{{first}}', '{{last}}']
   });
+  t.deepEqual(result, {
+    first: 'bob',
+    last: 'smith',
+    arr: ['bob', 'smith']
+  });
+});
 
-  it('should handle recursion', () => {
-    const result = varson({
-      a: 'a',
-      b: '{{c}}',
-      c: '{{a}}'
-    });
-    expect(result).to.deep.equal({
-      a: 'a',
-      b: 'a',
-      c: 'a'
-    });
+test('should handle recursion', (t) => {
+  t.plan(1);
+  const result = varson({
+    a: 'a',
+    b: '{{c}}',
+    c: '{{a}}'
   });
-  it('should handle nested recursion', () => {
-    const result = varson({
-      a: 'a',
-      b: '{{c}}',
-      c: '{{a}}',
-      nest: {
-        d: '{{b}}'
-      }
-    });
-    expect(result).to.deep.equal({
-      a: 'a',
-      b: 'a',
-      c: 'a',
-      nest: {
-        d: 'a'
-      }
-    });
+  t.deepEqual(result, {
+    a: 'a',
+    b: 'a',
+    c: 'a'
   });
-  it('context this is the object', () => {
-    const result = varson({
-      keys: 'obj',
-      obj: {
-        value: 'abc'
-      },
-      result: '{{lookup(keys, "value")}}'
-    }, {
-      // keep this as 'function' keyword notation
-      // so 'this' will be available:
-      lookup: function(key, value) {
-        return this[key][value];
-      }
-    });
-    expect(result).to.deep.equal({
-      keys: 'obj',
-      obj: {
-        value: 'abc'
-      },
-      result: 'abc'
-    });
-  });
+});
 
-  it('context obj', () => {
-    const result = varson({
-      people: '{{data}}',
-      firstName: '{{data.firstName}}',
-      lastName: '{{data.lastName}}'
-    }, {
-      data: {
-        firstName: 'Bob',
-        lastName: 'Smith'
-      }
-    });
-    expect(result).to.deep.equal({
-      people: {
-        firstName: 'Bob',
-        lastName: 'Smith'
-      },
+test('should handle nested recursion', (t) => {
+  t.plan(1);
+  const result = varson({
+    a: 'a',
+    b: '{{c}}',
+    c: '{{a}}',
+    nest: {
+      d: '{{b}}'
+    }
+  });
+  t.deepEqual(result, {
+    a: 'a',
+    b: 'a',
+    c: 'a',
+    nest: {
+      d: 'a'
+    }
+  });
+});
+
+test('context this is the object', (t) => {
+  t.plan(1);
+  const result = varson({
+    keys: 'obj',
+    obj: {
+      value: 'abc'
+    },
+    result: '{{lookup(keys, "value")}}'
+  }, {
+    // keep this as 'function' keyword notation
+    // so 'this' will be available:
+    lookup: function(key, value) {
+      return this[key][value];
+    }
+  });
+  t.deepEqual(result, {
+    keys: 'obj',
+    obj: {
+      value: 'abc'
+    },
+    result: 'abc'
+  });
+});
+
+test('context obj', (t) => {
+  t.plan(1);
+  const result = varson({
+    people: '{{data}}',
+    firstName: '{{data.firstName}}',
+    lastName: '{{data.lastName}}'
+  }, {
+    data: {
       firstName: 'Bob',
       lastName: 'Smith'
-    });
+    }
   });
-
-  it('should handle objects', () => {
-    const result = varson({
-      obja: {
-        a: 'a'
-      },
-      objb: '{{obja}}'
-    });
-    expect(result).to.deep.equal({
-      obja: {
-        a: 'a'
-      },
-      objb: {
-        a: 'a'
-      }
-    });
+  t.deepEqual(result, {
+    people: {
+      firstName: 'Bob',
+      lastName: 'Smith'
+    },
+    firstName: 'Bob',
+    lastName: 'Smith'
   });
+});
 
-  it('should handle complex objects', () => {
-    const result = varson({
-      name: 'bob',
+test('should handle objects', (t) => {
+  t.plan(1);
+  const result = varson({
+    obja: {
+      a: 'a'
+    },
+    objb: '{{obja}}'
+  });
+  t.deepEqual(result, {
+    obja: {
+      a: 'a'
+    },
+    objb: {
+      a: 'a'
+    }
+  });
+});
+
+test('should handle complex objects', (t) => {
+  t.plan(1);
+  const result = varson({
+    name: 'bob',
+    obja: {
+      name: '{{name}}'
+    },
+    objb: '{{obja}}'
+  });
+  t.deepEqual(result, {
+    name: 'bob',
+    obja: {
+      name: 'bob'
+    },
+    objb: {
+      name: 'bob'
+    }
+  });
+});
+
+test('should handle nested complex objects', (t) => {
+  t.plan(1);
+  const result = varson({
+    people: {
       obja: {
-        name: '{{name}}'
+        name: '{{people.name}}'
       },
-      objb: '{{obja}}'
-    });
-    expect(result).to.deep.equal({
-      name: 'bob',
+      objb: '{{people.obja}}',
+      name: 'bob'
+    }
+  });
+  t.deepEqual(result, {
+    people: {
       obja: {
         name: 'bob'
       },
       objb: {
         name: 'bob'
-      }
-    });
-  });
-
-  it('should handle nested complex objects', () => {
-    const result = varson({
-      people: {
-        obja: {
-          name: '{{people.name}}'
-        },
-        objb: '{{people.obja}}',
-        name: 'bob'
-      }
-    });
-    expect(result).to.deep.equal({
-      people: {
-        obja: {
-          name: 'bob'
-        },
-        objb: {
-          name: 'bob'
-        },
-        name: 'bob'
-      }
-    });
-  });
-
-  it('should handle circular', () => {
-    expect(() => {
-      varson({
-        a: '{{a}}'
-      });
-    }).to.throw();
-  });
-
-  it('should allow for dynamic keys', () => {
-    const result = varson({
-      '{{b}}': '{{ [1,2].join(",") }}',
-      b: 'js'
-    });
-    expect(result).to.deep.equal({
-      js: '1,2',
-      b: 'js'
-    });
-  });
-
-  it('should allow for dynamic keys in nested statements', () => {
-    const result = varson({
-      '{{b}}': '{{ [1,2].join(",") }}',
-      b: 'js',
-      c: {
-        '{{d}}': 'this is nested'
       },
-      d: 'hi'
+      name: 'bob'
+    }
+  });
+});
+
+test('should handle circular', (t) => {
+  t.plan(1);
+  t.throws(() => {
+    varson({
+      a: '{{a}}'
     });
-    expect(result).to.deep.equal({
-      js: '1,2',
-      b: 'js',
-      c: {
-        hi: 'this is nested'
+  });
+});
+
+test('should allow for dynamic keys', (t) => {
+  t.plan(1);
+  const result = varson({
+    '{{b}}': '{{ [1,2].join(",") }}',
+    b: 'js'
+  });
+  t.deepEqual(result, {
+    js: '1,2',
+    b: 'js'
+  });
+});
+
+test('should allow for dynamic keys in nested statements', (t) => {
+  t.plan(1);
+  const result = varson({
+    '{{b}}': '{{ [1,2].join(",") }}',
+    b: 'js',
+    c: {
+      '{{d}}': 'this is nested'
+    },
+    d: 'hi'
+  });
+  t.deepEqual(result, {
+    js: '1,2',
+    b: 'js',
+    c: {
+      hi: 'this is nested'
+    },
+    d: 'hi'
+  });
+});
+
+test('should allow complex dynamic key', (t) => {
+  t.plan(1);
+  const result = varson({
+    firstName: 'bob',
+    lastName: 'smith',
+    name: '{{firstName}} {{lastName}}',
+    age: 35,
+    card: {
+      '{{name}}': {
+        age: '{{age}}'
+      }
+    }
+  });
+  t.deepEqual(result, {
+    firstName: 'bob',
+    lastName: 'smith',
+    name: 'bob smith',
+    age: 35,
+    card: {
+      'bob smith': {
+        age: 35
+      }
+    }
+  });
+});
+
+test('should allow complex dynamic key pt 2', (t) => {
+  t.plan(1);
+  const result = varson({
+    firstName: 'bob',
+    lastName: 'smith',
+    age: 35,
+    card: {
+      '{{firstName}}': {
+        age: '{{age}}'
       },
-      d: 'hi'
-    });
-  });
-
-  it('should allow complex dynamic key', () => {
-    const result = varson({
-      firstName: 'bob',
-      lastName: 'smith',
-      name: '{{firstName}} {{lastName}}',
-      age: 35,
-      card: {
-        '{{name}}': {
-          age: '{{age}}'
-        }
+      '{{lastName}}': {
+        age: '{{age}}'
       }
-    });
-    expect(result).to.deep.equal({
-      firstName: 'bob',
-      lastName: 'smith',
-      name: 'bob smith',
-      age: 35,
-      card: {
-        'bob smith': {
-          age: 35
-        }
-      }
-    });
+    }
   });
-
-  it('should allow complex dynamic key pt 2', () => {
-    const result = varson({
-      firstName: 'bob',
-      lastName: 'smith',
-      age: 35,
-      card: {
-        '{{firstName}}': {
-          age: '{{age}}'
-        },
-        '{{lastName}}': {
-          age: '{{age}}'
-        }
+  t.deepEqual(result, {
+    firstName: 'bob',
+    lastName: 'smith',
+    age: 35,
+    card: {
+      bob: {
+        age: 35
+      },
+      smith: {
+        age: 35
       }
-    });
-    expect(result).to.deep.equal({
-      firstName: 'bob',
-      lastName: 'smith',
-      age: 35,
-      card: {
-        bob: {
-          age: 35
-        },
-        smith: {
-          age: 35
-        }
-      }
-    });
+    }
   });
+});
 
-
-  it('should allow for js in keys', () => {
-    const result = varson({
-      '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
-      '{{ c ? "cIsTrue" : "cIsFalse" }}': '123',
-      b: true,
-      c: false
-    });
-    expect(result).to.deep.equal({
-      bIsTrue: '123',
-      cIsFalse: '123',
-      b: true,
-      c: false
-    });
+test('should allow for js in keys', (t) => {
+  t.plan(1);
+  const result = varson({
+    '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
+    '{{ c ? "cIsTrue" : "cIsFalse" }}': '123',
+    b: true,
+    c: false
   });
-
-  it('should allow . in key or value (failed before)', () => {
-    const result = varson({
-      blah: 'yep',
-      './test': {
-        './debug': './true',
-        '{{blah}}': 123
-      }
-    });
-    expect(result).to.deep.equal({
-      blah: 'yep',
-      './test': {
-        './debug': './true',
-        yep: 123
-      }
-    });
+  t.deepEqual(result, {
+    bIsTrue: '123',
+    cIsFalse: '123',
+    b: true,
+    c: false
   });
+});
 
-  it('should allow to change {{ }} to { }', () => {
-    const origSettings = varson.settings;
-    varson.settings.start = '{';
-    varson.settings.end = '}';
-    const result = varson({
-      first: 'Bob',
-      last: 'Smith',
-      full: '{first} {last}'
-    });
-    expect(result).to.deep.equal({
-      first: 'Bob',
-      last: 'Smith',
-      full: 'Bob Smith'
-    });
-    varson.settings = origSettings;
+test('should allow . in key or value (failed before)', (t) => {
+  t.plan(1);
+  const result = varson({
+    blah: 'yep',
+    './test': {
+      './debug': './true',
+      '{{blah}}': 123
+    }
   });
+  t.deepEqual(result, {
+    blah: 'yep',
+    './test': {
+      './debug': './true',
+      yep: 123
+    }
+  });
+});
+
+test('should allow to change {{ }} to { }', (t) => {
+  t.plan(1);
+  const origSettings = varson.settings;
+  varson.settings.start = '{';
+  varson.settings.end = '}';
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    full: '{first} {last}'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    full: 'Bob Smith'
+  });
+  varson.settings = origSettings;
 });
