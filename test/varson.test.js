@@ -440,13 +440,15 @@ test('should allow . in key or value (failed before)', (t) => {
 test('should allow to change {{ }} to { }', (t) => {
   t.plan(1);
   const origSettings = varson.settings;
-  varson.settings.start = '{';
-  varson.settings.end = '}';
+  const settings = {
+    start: '{',
+    end: '}'
+  };
   const result = varson({
     first: 'Bob',
     last: 'Smith',
     full: '{first} {last}'
-  });
+  }, null, settings);
   t.deepEqual(result, {
     first: 'Bob',
     last: 'Smith',

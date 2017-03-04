@@ -9,8 +9,12 @@ const get = _.get;
 const set = _.set;
 const unset = _.unset;
 
-const varson = (obj, context) => {
-  const reg = new RegExp(`${varson.settings.start}([\\s\\S]+?)${varson.settings.end}`, 'g');
+const varson = (obj, context, settings) => {
+  settings = settings || {
+    start: '{{',
+    end: '}}'
+  };
+  const reg = new RegExp(`${settings.start}([\\s\\S]+?)${settings.end}`, 'g');
 
   const isVariable = (val) => (typeof val === 'string' && val.match(reg));
 
