@@ -456,3 +456,13 @@ test('should allow to change {{ }} to { }', (t) => {
   });
   varson.settings = origSettings;
 });
+
+test('should be able to use a helper to get an array', (t) => {
+  t.plan(1);
+  const result = varson({
+    arr: '{{ [1,2,3] }}'
+  });
+  t.deepEqual(result, {
+    arr: [1, 2, 3]
+  });
+});
