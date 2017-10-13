@@ -33,6 +33,7 @@ const varson = (obj, context, settings) => {
       if (!rendered) {
         return str;
       }
+      //return result is an object, so just do a get on it
       if (rendered === '[object Object]') {
         const key = str.replace(settings.start, '').replace(settings.end, '');
         return get(out, key) || get(context, key);
@@ -49,6 +50,7 @@ const varson = (obj, context, settings) => {
 
   const processKey = function(key, value, parent) {
     if (isVar(key)) {
+      //key is a variable, need to remove old {{var}} key from object and set as new key
       const oldKey = key;
       key = tmpl(key);
       parent[key] = parent[oldKey];
