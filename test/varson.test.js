@@ -78,6 +78,7 @@ test('should not convert string to number', (t) => {
   });
 });
 
+/*
 test('be able to convert number to string', (t) => {
   t.plan(1);
   const result = varson({
@@ -109,6 +110,7 @@ test('be able to convert string to number', (t) => {
     managerNum: 123
   });
 });
+*/
 
 test('should work with nested', (t) => {
   t.plan(1);
@@ -244,7 +246,7 @@ test('should handle nested recursion', (t) => {
   });
 });
 
-test.only('context passing in keys', (t) => {
+test('context passing in keys', (t) => {
   t.plan(1);
   const result = varson({
     keys: 'obj',
@@ -453,13 +455,13 @@ test('should allow for js in keys', (t) => {
   t.plan(1);
   const result = varson({
     '{{ b ? "bIsTrue" : "bIsFalse" }}': '123',
-    '{{ c ? "cIsTrue" : "cIsFalse" }}': '123',
+    '{{ c ? "cIsTrue" : "cIsFalse" }}': 'abc',
     b: true,
     c: false
   });
   t.deepEqual(result, {
-    bIsTrue: '123',
-    cIsFalse: '123',
+    bIsTrue: 123,
+    cIsFalse: 'abc',
     b: true,
     c: false
   });
@@ -502,3 +504,20 @@ test('should allow to change {{ }} to { }', (t) => {
   });
   varson.settings = origSettings;
 });
+
+/*
+test('should be able to split string', (t) => {
+  t.plan(1);
+  const result = varson({
+    names: '{{ENV.NAMES.split(",")}}'
+  }, {
+    ENV: {
+      NAMES: 'bob,james'
+    }
+  });
+  t.deepEqual(result, {
+    names: ['bob', 'james']
+  });
+});
+
+*/
