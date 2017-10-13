@@ -198,19 +198,19 @@ test('should handle nested recursion', (t) => {
   });
 });
 
-test('context this is the object', (t) => {
+test.only('context passing in keys', (t) => {
   t.plan(1);
   const result = varson({
     keys: 'obj',
     obj: {
       value: 'abc'
     },
-    result: '{{lookup(keys, "value")}}'
+    result: '{{lookup(keys, obj.value)}}'
   }, {
     // keep this as 'function' keyword notation
     // so 'this' will be available:
-    lookup: function(key, value) {
-      return this[key][value];
+    lookup(key, value) {
+      return `${key}${value}`;
     }
   });
   t.deepEqual(result, {
@@ -218,7 +218,7 @@ test('context this is the object', (t) => {
     obj: {
       value: 'abc'
     },
-    result: 'abc'
+    result: 'objabc'
   });
 });
 
