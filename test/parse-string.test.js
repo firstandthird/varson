@@ -13,16 +13,6 @@ test('should parse empty strings as empty strings', (t) => {
   const o = parseStr('');
   t.deepEqual(o, '');
 });
-test('should parse ints', (t) => {
-  t.plan(1);
-  const o = parseStr('1');
-  t.equal(o, 1);
-});
-test('should parse floats', (t) => {
-  t.plan(1);
-  const o = parseStr('99.1');
-  t.equal(o, 99.1);
-});
 test('should parse boolean', (t) => {
   t.plan(1);
   const o = parseStr('true');

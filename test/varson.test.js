@@ -64,6 +64,52 @@ test('should keep the if number', (t) => {
   });
 });
 
+test('should not convert string to number', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: '1'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: 1
+  });
+});
+
+test('be able to convert number to string', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: 1,
+    managerString: '{{manager.toString()}}'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: 1,
+    managerString: '1'
+  });
+});
+
+test('be able to convert string to number', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'Bob',
+    last: 'Smith',
+    manager: '123',
+    managerNum: '{{parseInt(manager, 10)}}'
+  });
+  t.deepEqual(result, {
+    first: 'Bob',
+    last: 'Smith',
+    manager: '123',
+    managerNum: 123
+  });
+});
+
 test('should work with nested', (t) => {
   t.plan(1);
   const result = varson({
