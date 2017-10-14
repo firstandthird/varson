@@ -1,8 +1,6 @@
 'use strict';
-const parseStr = require('./lib/parse-string');
 const template = require('./lib/template');
 const aug = require('aug');
-const get = require('lodash.get');
 
 const varson = (obj, context, settings) => {
   settings = settings || {
@@ -40,7 +38,7 @@ const varson = (obj, context, settings) => {
 
   const processValue = function(value) {
     value = tmpl(value);
-    return parseStr(value);
+    return value;
   };
 
   const processKey = function(key, value, parent) {

@@ -1,5 +1,4 @@
-/* global describe, test */
-const test = require('tape');
+const test = require('tap').test;
 const varson = require('../');
 
 test('should populate from another var', (t) => {
@@ -78,7 +77,6 @@ test('should not convert string to number', (t) => {
   });
 });
 
-/*
 test('be able to convert number to string', (t) => {
   t.plan(1);
   const result = varson({
@@ -110,7 +108,6 @@ test('be able to convert string to number', (t) => {
     managerNum: 123
   });
 });
-*/
 
 test('should work with nested', (t) => {
   t.plan(1);
@@ -507,7 +504,6 @@ test('should allow to change {{ }} to { }', (t) => {
 });
 */
 
-/*
 test('should be able to split string', (t) => {
   t.plan(1);
   const result = varson({
@@ -521,4 +517,3 @@ test('should be able to split string', (t) => {
     names: ['bob', 'james']
   });
 });
-*/
