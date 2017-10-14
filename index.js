@@ -7,7 +7,6 @@ const varson = (obj, context, settings) => {
     start: '{{',
     end: '}}'
   };
-  const reg = new RegExp(`${settings.start}([\\s\\S]+?)${settings.end}`, 'g');
 
   const out = aug(obj);
 
@@ -30,7 +29,7 @@ const varson = (obj, context, settings) => {
       if (count === 10) {
         throw new Error('circular reference');
       }
-      const rendered = template(str, aug(out, context));
+      const rendered = template(str, aug(out, context), settings);
       return tmpl(rendered, ++count);
     }
     return str;

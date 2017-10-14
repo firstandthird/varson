@@ -482,10 +482,8 @@ test('should allow . in key or value (failed before)', (t) => {
   });
 });
 
-/*
 test('should allow to change {{ }} to { }', (t) => {
   t.plan(1);
-  const origSettings = varson.settings;
   const settings = {
     start: '{',
     end: '}'
@@ -500,9 +498,7 @@ test('should allow to change {{ }} to { }', (t) => {
     last: 'Smith',
     full: 'Bob Smith'
   });
-  varson.settings = origSettings;
 });
-*/
 
 test('should be able to split string', (t) => {
   t.plan(1);
