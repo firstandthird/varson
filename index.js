@@ -1,6 +1,6 @@
 'use strict';
 const parseStr = require('./lib/parse-string');
-const template = require('lodash.template');
+const template = require('./lib/template');
 const aug = require('aug');
 const get = require('lodash.get');
 
@@ -27,18 +27,13 @@ const varson = (obj, context, settings) => {
     return false;
   };
 
-  const tmpl = function(str) {
+  const tmpl = function(str, count = 0) {
     if (isVar(str)) {
-      const rendered = template(str, { interpolate: reg, imports: context })(out);
-      if (!rendered) {
-        return str;
+      if (count === 10) {
+        throw new Error('circular reference');
       }
-      //return result is an object, so just do a get on it
-      if (rendered === '[object Object]') {
-        const key = str.replace(settings.start, '').replace(settings.end, '');
-        return get(out, key) || get(context, key);
-      }
-      return tmpl(rendered);
+      const rendered = template(str, aug(out, context));
+      return tmpl(rendered, ++count);
     }
     return str;
   };
