@@ -513,3 +513,15 @@ test('should be able to split string', (t) => {
     names: ['bob', 'james']
   });
 });
+
+test('ms helper', (t) => {
+  t.plan(1);
+  const result = varson({
+    oneDay: '{{ms("1d")}}'
+  }, {
+    ms: require('ms')
+  });
+  t.deepEqual(result, {
+    oneDay: 1000 * 60 * 60 * 24
+  });
+});
