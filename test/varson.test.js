@@ -514,6 +514,24 @@ test('should be able to split string', (t) => {
   });
 });
 
+test('should be able to return a function', (t) => {
+  t.plan(2);
+  const add = function(a, b) {
+    return a + b;
+  };
+  const result = varson({
+    add: '{{fn}}',
+    onePlusTwo: '{{fn(1, 2)}}'
+  }, {
+    fn: add
+  });
+  t.deepEqual(result, {
+    add,
+    onePlusTwo: 3
+  });
+  t.equal(result.add(1, 4), 5);
+});
+
 test('ms helper', (t) => {
   t.plan(1);
   const result = varson({
