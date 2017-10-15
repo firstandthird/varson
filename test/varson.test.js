@@ -543,3 +543,12 @@ test('ms helper', (t) => {
     oneDay: 1000 * 60 * 60 * 24
   });
 });
+
+test('throw not found', (t) => {
+  t.plan(1);
+  t.throws(() => {
+    varson({
+      found: '{{notFound}}'
+    });
+  });
+});
