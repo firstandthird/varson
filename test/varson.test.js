@@ -559,6 +559,20 @@ test('ms helper', (t) => {
   });
 });
 
+test('null ok', (t) => {
+  t.plan(1);
+  const result = varson({
+    test: {
+      found: null
+    }
+  });
+  t.deepEqual(result, {
+    test: {
+      found: null
+    }
+  });
+});
+
 test('throw not found', (t) => {
   t.plan(1);
   t.throws(() => {

@@ -48,7 +48,7 @@ const varson = (obj, context, settings) => {
       parent[key] = parent[oldKey];
       delete parent[oldKey];
     }
-    if (typeof value === 'object') {
+    if (value && typeof value === 'object') {
       return processPart(value, parent[key]);
     }
     parent[key] = processValue(value);
