@@ -532,6 +532,21 @@ test('should be able to return a function', (t) => {
   t.equal(result.add(1, 4), 5);
 });
 
+test('should be able to return a function 2', (t) => {
+  t.plan(1);
+  const add = function(a, b) {
+    return function(c) {
+      return a + b + c;
+    };
+  };
+  const result = varson({
+    add: '{{fn(1, 2)}}'
+  }, {
+    fn: add
+  });
+  t.equal(result.add(3), 6);
+});
+
 test('ms helper', (t) => {
   t.plan(1);
   const result = varson({
