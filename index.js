@@ -37,6 +37,9 @@ const varson = (obj, context, settings) => {
 
   const processValue = function(value) {
     value = tmpl(value);
+    if (typeof value === 'string' && value === 'true') {
+      return true;
+    }
     return value;
   };
 

@@ -1,6 +1,29 @@
 const test = require('tap').test;
 const varson = require('../');
 
+
+test('should turn "true"/true/"1"/1 to boolean true', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: 'true',
+    last: true,
+    manager: '1',
+    isManager: 1
+  });
+  console.log('+-')
+  console.log('+-')
+  console.log('+-')
+  console.log('+-')
+  console.log('+-')
+  console.log(result)
+  t.deepEqual(result, {
+    first: true,
+    last: true,
+    manager: true,
+    isManager: true
+  });
+});
+
 test('should populate from another var', (t) => {
   t.plan(1);
   const result = varson({
