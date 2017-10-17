@@ -10,12 +10,6 @@ test('should turn "true"/true/"1"/1 to boolean true', (t) => {
     manager: '1',
     isManager: 1
   });
-  console.log('+-')
-  console.log('+-')
-  console.log('+-')
-  console.log('+-')
-  console.log('+-')
-  console.log(result)
   t.deepEqual(result, {
     first: true,
     last: true,
