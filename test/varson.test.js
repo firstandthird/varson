@@ -581,3 +581,19 @@ test('throw not found', (t) => {
     });
   });
 });
+
+test('recursive context', (t) => {
+  t.plan(1);
+  const add = function(a, b) {
+    return a + b;
+  };
+  const result = varson({
+    equals: '{{three}}'
+  }, {
+    three: '{{add(1,2)}}',
+    add
+  });
+  t.deepEqual(result, {
+    equals: 3
+  });
+});
