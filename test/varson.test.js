@@ -1,6 +1,6 @@
 const test = require('tap').test;
 const varson = require('../');
-
+/*
 test('should populate from another var', (t) => {
   t.plan(1);
   const result = varson({
@@ -597,8 +597,9 @@ test('recursive context', (t) => {
     equals: 3
   });
 });
+*/
 
-test('promises', (t) => {
+test('promises', async(t) => {
   const results = await varson({
     personId: '123',
     person: '{{getPerson(personId)}}'
