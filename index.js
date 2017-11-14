@@ -2,7 +2,7 @@
 const template = require('./lib/template');
 const aug = require('aug');
 
-const varson = (obj, context, settings) => {
+const varson = function(obj, context, settings) {
   settings = settings || {
     start: '{{',
     end: '}}'

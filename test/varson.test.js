@@ -597,3 +597,23 @@ test('recursive context', (t) => {
     equals: 3
   });
 });
+
+test('promises', (t) => {
+  const results = await varson({
+    personId: '123',
+    person: '{{getPerson(personId)}}'
+  }, {
+    getPerson(id) {
+      return new Promise((resolve, reject) => {
+        resolve({ name: 'bob' });
+      });
+    }
+  });
+  t.deepEquals(results, {
+    personId: '123',
+    person: {
+      name: 'bob'
+    }
+  });
+  t.end();
+});
