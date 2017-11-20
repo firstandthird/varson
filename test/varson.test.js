@@ -267,6 +267,22 @@ test('context passing in keys', (t) => {
   });
 });
 
+test('should default to blank if key doesnt exist', (t) => {
+  t.plan(1);
+  const result = varson({
+    age: '{{user.age}}',
+    name: '{{user.name}}'
+  }, {
+    user: {
+      age: 20
+    }
+  });
+  t.deepEqual(result, {
+    name: '',
+    age: 20
+  });
+});
+
 test('context obj', (t) => {
   t.plan(1);
   const result = varson({
