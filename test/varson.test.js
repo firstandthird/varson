@@ -544,7 +544,7 @@ test('should be able to return false', (t) => {
     }
   });
   
-  t.equal(result, {
+  t.deepEqual(result, {
     thisTrue: true,
     thisFalse: false,
     thisAlsoFalse: false
