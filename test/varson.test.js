@@ -530,6 +530,28 @@ test('should be able to split string', (t) => {
   });
 });
 
+test('should be able to return false', (t) => {
+  t.plan(1);
+  const result = varson({
+    thisTrue: '{{ ENV.IS_TRUE === "true" }}',
+    thisFalse: '{{ ENV.IS_FALSE === "true" }}',
+    thisAlsoFalse: '{{ ENV.IS_UNDF === "true" }}'
+  }, {
+    ENV: {
+      IS_TRUE: 'true',
+      IS_FALSE: 'false',
+      IS_UNDF: undefined
+    }
+  });
+  
+  t.equal(result, {
+    thisTrue: true,
+    thisFalse: false,
+    thisAlsoFalse: false
+  });
+
+});
+
 test('should be able to return a function', (t) => {
   t.plan(2);
   const add = function(a, b) {
