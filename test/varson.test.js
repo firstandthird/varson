@@ -1,4 +1,6 @@
-const test = require('tap').test;
+const tap = require('tap');
+const test = tap.test;
+const skip = function() {};
 const varson = require('../');
 
 test('should populate from another var', (t) => {
@@ -633,6 +635,62 @@ test('recursive context', (t) => {
   });
   t.deepEqual(result, {
     equals: 3
+  });
+});
+
+test('variables in method arguments', (t) => {
+  t.plan(1);
+  const add = function(a, b) {
+    return a + b;
+  };
+  const result = varson({
+    a: 1,
+    b: 2,
+    equals: '{{add(a, b)}}'
+  }, {
+    add
+  });
+  t.deepEqual(result, {
+    a: 1,
+    b: 2,
+    equals: 3
+  });
+});
+
+test('function with complex args', (t) => {
+  t.plan(1);
+  const echo = function(a) {
+    return a;
+  };
+  const result = varson({
+    first: 'bob',
+    equals: '{{echo("my name is " + first)}}'
+  }, {
+    echo
+  });
+  t.deepEqual(result, {
+    first: 'bob',
+    equals: 'my name is bob'
+  });
+});
+
+//TODO: support this at some point
+skip('nested variables in method arguments', (t) => {
+  t.plan(1);
+  const join = function(a, b) {
+    return a + b;
+  };
+  const result = varson({
+    first: 'bob',
+    last: 'smith',
+    equals: '{{join("my name is {{first}}", last)}}'
+  }, {
+    join
+  });
+  t.deepEqual(result, {
+    first: 'bob',
+    last: 'smith',
+    equals: 'my name is bob smith'
   });
 });
 
