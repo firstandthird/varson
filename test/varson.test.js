@@ -674,8 +674,7 @@ test('function with complex args', (t) => {
   });
 });
 
-//TODO: support this at some point
-skip('nested variables in method arguments', (t) => {
+test('support backticks', (t) => {
   t.plan(1);
   const join = function(a, b) {
     return a + b;
@@ -683,7 +682,7 @@ skip('nested variables in method arguments', (t) => {
   const result = varson({
     first: 'bob',
     last: 'smith',
-    equals: '{{join("my name is {{first}}", last)}}'
+    equals: '{{join(`my name is ${first} `, last)}}'
   }, {
     join
   });
