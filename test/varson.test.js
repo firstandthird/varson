@@ -49,6 +49,18 @@ test('should keep the if boolean false', (t) => {
   });
 });
 
+test('should keep the if boolean false', (t) => {
+  t.plan(1);
+  const result = varson({
+    first: '',
+    hasFirst: '{{ first ? true : false}}'
+  });
+  t.deepEqual(result, {
+    first: '',
+    hasFirst: false
+  });
+});
+
 test('should keep the if number', (t) => {
   t.plan(1);
   const result = varson({
